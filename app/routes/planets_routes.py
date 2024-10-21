@@ -7,7 +7,7 @@ planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
 def validate_planet(planet_id):
     try:
         planet_id = int(planet_id)
-    except:
+    except ValueError:
         response = {"message": f"planet {planet_id} invalid"}
         abort(make_response(response, 400))
 
