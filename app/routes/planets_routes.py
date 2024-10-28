@@ -1,8 +1,27 @@
-from flask import Blueprint, abort, make_response
+from flask import Blueprint, abort, make_response, request
 from app.models.planet import Planet
+from ..db import db 
 
 planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
 
+@planets_bp.post("")
+def create_planet():
+    request_body = request.get_json()
+    name = request_body["name"]
+    description = request_body["description"]
+    has_moon = request_body["has_moon"]
+
+    new_planet = Planet(name=name, description=description, has_moon=has_moon)
+    db.session.add(new_planet)
+    db.session.commit()
+
+    response = {
+        "id": new_planet.id,
+        "name": new_planet.name,
+        "description": new_planet.description,
+        "has_moon": new_planet.has_moon
+    }
+    return response, 201
 
 # def validate_planet(planet_id):
 #     try:
