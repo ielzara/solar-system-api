@@ -6,7 +6,27 @@ planets_bp = Blueprint("planets_bp", __name__, url_prefix="/planets")
 
 @planets_bp.get("")
 def get_all_planets():
-    query=db.select(Planet).order_by(Planet.id)
+    sort_param = request.args.get("sort")
+    
+    if sort_param and sort_param.lower() == "name":
+        query = db.select(Planet).order_by(Planet.name)
+    else:
+        query = db.select(Planet).order_by(Planet.id)
+
+    name_param = request.args.get("name")
+    if name_param:
+        query = query.where(Planet.name.ilike(f"%{name_param}%"))
+
+    description_param = request.args.get("description")
+    if description_param:
+        query = query.where(Planet.description.ilike(f"%{description_param}%"))
+
+    has_moon_param = request.args.get("has_moon")
+
+    if has_moon_param is not None:
+        has_moon_value = has_moon_param.lower() == "true"
+        query = query.where(Planet.has_moon == has_moon_value)
+
     planets = db.session.scalars(query)
 
     planets_response=[]
@@ -50,7 +70,6 @@ def get_one_planet(planet_id):
         "description": planet.description,
         "has_moon": planet.has_moon,
     }
-
 
 @planets_bp.put("/<planet_id>")
 def update_planet(planet_id):
