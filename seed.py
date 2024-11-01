@@ -6,7 +6,7 @@ from app import create_app, db
 from app.models.planet import Planet
 
 my_app = create_app()
-with my_app.app_context() as ctx:
+with my_app.app_context():
     db.session.add(Planet(name="Mars", description="4217 miles in diameter, very cold and red", has_moon=True)),
     db.session.add(Planet(name="Earth",description="7926 miles in diameter, habitable and blue", has_moon=True)),
     db.session.add(Planet(name="Venus",description="3760.4 miles in diameter, hottest planet and red", has_moon=False)),
