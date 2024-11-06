@@ -1,4 +1,5 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.models.moon import Moon
 from ..db import db
 
 
@@ -7,6 +8,7 @@ class Planet(db.Model):
     name: Mapped[str]
     description: Mapped[str]
     has_moon: Mapped[bool]
+    moons: Mapped[list["Moon"]] = relationship(back_populates="planet")
 
     @classmethod
     def from_dict(cls, planet_data):
